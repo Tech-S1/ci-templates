@@ -1,0 +1,58 @@
+name: Semantic Release
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Git ref or SHA to check out for release
+        type: string
+        default: ""
+    outputs:
+      tag:
+        description: Git tag created by semantic-release, if any
+        value: ${{ jobs.release.outputs.tag }}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+      - run: >-
+          npm install -g
+          github:semantic-release/semantic-release#8d905a56e80030c141a71a32c0c4cb870e90470a
+          github:semantic-release/commit-analyzer#f106b763d5a1057a18e3457c11d521976d770506
+          github:semantic-release/release-notes-generator#9728887caf9d7ca03e6861b019785539cbb7857e
+          github:semantic-release/github#28e37416826cefaa1aa250437fe0f949e6b490a7
+      - name: semantic-release
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export NODE_PATH="$(npm root -g)"
+          node <<'EOF'
+          const fs = require("fs");
+          const semanticRelease = require("semantic-release");
+
+          (async () => {
+            const result = await semanticRelease();
+            if (result?.nextRelease?.gitTag) {
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `tag=${result.nextRelease.gitTag}\n`);
+            }
+          })().catch((err) => {
+            console.error(err);
+            process.exit(1);
+          });
+          EOF

@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "renovate.json"
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    uses: ./.github/workflows/semantic-release.yml
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
