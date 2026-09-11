@@ -27,7 +27,10 @@ jobs:
       - name: Check go.mod is tidy
         run: |
           go mod tidy
-          git diff --exit-code go.mod go.sum
+          if ! git diff --exit-code go.mod go.sum; then
+            echo "::error::go.mod/go.sum are not tidy; run 'go mod tidy' and commit the result"
+            exit 1
+          fi
       - run: go test -race -count=1 ${{ inputs.test-packages }}
       - run: go build ${{ inputs.build-packages }}
 
