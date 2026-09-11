@@ -34,17 +34,5 @@
       ],
       "groupName": "golangci-lint"
     }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Update semantic-release packages pinned by git SHA",
-      "managerFilePatterns": ["/(^|/)\\.github/workflows/.*\\.ya?ml$/"],
-      "matchStrings": [
-        "github:(?<depName>semantic-release/[\\w-]+)#(?<currentDigest>[a-f0-9]{40})"
-      ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver"
-    }
   ]
 }
