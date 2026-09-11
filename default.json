@@ -1,0 +1,34 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Default Renovate preset for Tech-S1 repos",
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "labels": ["dependencies"],
+  "minimumReleaseAge": "3 days",
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": null
+  },
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "assignees": ["Tech-S1"],
+  "reviewers": ["Tech-S1"],
+  "timezone": "Europe/London",
+  "schedule": ["* 7 * * *"],
+  "packageRules": [
+    {
+      "description": "Group GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "No minimum release age for internal CI templates",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["Tech-S1/ci-templates/**"],
+      "minimumReleaseAge": null
+    }
+  ]
+}

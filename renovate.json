@@ -1,22 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests"
-  ],
-  "labels": ["dependencies"],
-  "minimumReleaseAge": "3 days",
-  "osvVulnerabilityAlerts": true,
-  "vulnerabilityAlerts": {
-    "minimumReleaseAge": null
-  },
-  "semanticCommits": "enabled",
-  "semanticCommitType": "chore",
-  "semanticCommitScope": "deps",
-  "assignees": ["Tech-S1"],
-  "reviewers": ["Tech-S1"],
-  "timezone": "Europe/London",
-  "schedule": ["* 7 * * *"],
+  "extends": ["local>Tech-S1/ci-templates"],
   "packageRules": [
     {
       "description": "Group Trivy action digest and binary version updates",
