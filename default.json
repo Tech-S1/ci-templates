@@ -25,9 +25,17 @@
       "groupName": "github-actions"
     },
     {
+      "description": "Raise pinDigest updates immediately (safer than leaving unpinned)",
+      "matchUpdateTypes": ["pinDigest"],
+      "minimumReleaseAge": null
+    },
+    {
       "description": "No minimum release age for internal CI templates",
       "matchManagers": ["github-actions"],
-      "matchPackageNames": ["Tech-S1/ci-templates/**"],
+      "matchPackageNames": [
+        "Tech-S1/ci-templates",
+        "Tech-S1/ci-templates/**"
+      ],
       "minimumReleaseAge": null
     }
   ]
