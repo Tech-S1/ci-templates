@@ -32,13 +32,12 @@
       "minimumReleaseAge": null
     },
     {
-      "description": "Private CI templates: no release age, no digest pins (github-tags digest lookup fails)",
+      "description": "No minimum release age for internal CI templates",
       "matchPackageNames": [
         "Tech-S1/ci-templates",
         "Tech-S1/ci-templates/**"
       ],
-      "minimumReleaseAge": null,
-      "pinDigests": false
+      "minimumReleaseAge": null
     }
   ]
 }
