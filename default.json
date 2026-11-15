@@ -9,7 +9,8 @@
   "minimumReleaseAge": "3 days",
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
-    "minimumReleaseAge": null
+    "minimumReleaseAge": null,
+    "groupName": "security"
   },
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
