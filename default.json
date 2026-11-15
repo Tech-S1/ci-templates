@@ -32,11 +32,12 @@
       "minimumReleaseAge": null
     },
     {
-      "description": "No minimum release age for internal CI templates",
+      "description": "Group all Tech-S1/ci-templates updates (actions + renovate preset) and raise immediately",
       "matchPackageNames": [
         "Tech-S1/ci-templates",
         "Tech-S1/ci-templates/**"
       ],
+      "groupName": "ci-templates",
       "minimumReleaseAge": null
     }
   ]
