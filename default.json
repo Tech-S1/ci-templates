@@ -10,7 +10,8 @@
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "minimumReleaseAge": null,
-    "groupName": "security"
+    "groupName": "security",
+    "semanticCommitType": "fix"
   },
   "semanticCommits": "enabled",
   "semanticCommitType": "chore",
@@ -31,12 +32,13 @@
       "minimumReleaseAge": null
     },
     {
-      "description": "No minimum release age for internal CI templates",
+      "description": "Private CI templates: no release age, no digest pins (github-tags digest lookup fails)",
       "matchPackageNames": [
         "Tech-S1/ci-templates",
         "Tech-S1/ci-templates/**"
       ],
-      "minimumReleaseAge": null
+      "minimumReleaseAge": null,
+      "pinDigests": false
     }
   ]
 }
