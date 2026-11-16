@@ -7,10 +7,6 @@ on:
         description: Git ref or SHA to check out for release
         type: string
         default: ""
-      draft-release:
-        description: Create a draft GitHub release so assets can be attached before publish
-        type: boolean
-        default: false
     outputs:
       tag:
         description: Git tag created by semantic-release, if any
@@ -44,7 +40,6 @@ jobs:
         id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DRAFT_RELEASE: ${{ inputs.draft-release }}
         run: |
           export NODE_PATH="$(npm root -g)"
           node <<'EOF'
@@ -52,15 +47,7 @@ jobs:
           const semanticRelease = require("semantic-release").default;
 
           (async () => {
-            const config = {};
-            if (process.env.DRAFT_RELEASE === "true") {
-              config.plugins = [
-                "@semantic-release/commit-analyzer",
-                "@semantic-release/release-notes-generator",
-                ["@semantic-release/github", { draftRelease: true }],
-              ];
-            }
-            const result = await semanticRelease(config);
+            const result = await semanticRelease();
             if (result?.nextRelease?.gitTag) {
               fs.appendFileSync(process.env.GITHUB_OUTPUT, `tag=${result.nextRelease.gitTag}\n`);
             }
