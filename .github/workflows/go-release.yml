@@ -91,7 +91,7 @@ jobs:
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           version: v0.76.2
-          scan-type: binary
+          scan-type: fs
           scan-ref: dist/${{ steps.build.outputs.artifact }}
           format: cyclonedx
           output: dist/${{ steps.build.outputs.artifact }}.cdx.json
