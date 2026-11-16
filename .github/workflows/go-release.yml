@@ -145,6 +145,7 @@ jobs:
     env:
       TAG: ${{ needs.release.outputs.tag }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
     steps:
       - name: Publish release
         run: gh release edit "${TAG}" --draft=false
