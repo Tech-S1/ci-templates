@@ -28,6 +28,7 @@ jobs:
     uses: ./.github/workflows/semantic-release.yml
     with:
       ref: ${{ inputs.ref }}
+      draft-release: true
     permissions:
       contents: write
       issues: write
@@ -134,3 +135,16 @@ jobs:
             "dist/${ARTIFACT}.cosign.bundle" \
             "dist/${ARTIFACT}.checksums.txt" \
             --clobber
+
+  publish:
+    needs: [release, artifacts]
+    if: needs.release.outputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.release.outputs.tag }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Publish draft release
+        run: gh release edit "${TAG}" --draft=false
