@@ -44,6 +44,7 @@ jobs:
       attestations: write
     env:
       TAG: ${{ needs.release.outputs.tag }}
+      GH_REPO: ${{ github.repository }}
     strategy:
       fail-fast: false
       matrix:
@@ -79,7 +80,8 @@ jobs:
           EXT: ${{ matrix.ext }}
         run: |
           mkdir -p dist
-          artifact="${BINARY_NAME}-${GOOS}-${GOARCH}${EXT}"
+          version="${TAG#v}"
+          artifact="${BINARY_NAME}_${version}_${GOOS}_${GOARCH}${EXT}"
           commit="$(git rev-parse HEAD)"
           date="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           ldflags="-s -w"
@@ -136,8 +138,47 @@ jobs:
             "dist/${ARTIFACT}.checksums.txt" \
             --clobber
 
-  publish:
+  checksums:
     needs: [release, artifacts]
+    if: needs.release.outputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.release.outputs.tag }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      BINARY_NAME: ${{ inputs.binary-name }}
+    steps:
+      - name: Generate SHA256SUMS
+        run: |
+          version="${TAG#v}"
+          mkdir -p dist
+          bins=(
+            "${BINARY_NAME}_${version}_linux_amd64"
+            "${BINARY_NAME}_${version}_linux_arm64"
+            "${BINARY_NAME}_${version}_darwin_amd64"
+            "${BINARY_NAME}_${version}_darwin_arm64"
+            "${BINARY_NAME}_${version}_windows_amd64.exe"
+          )
+          existing=()
+          for bin in "${bins[@]}"; do
+            if gh release download "${TAG}" -p "${bin}" -D dist; then
+              existing+=("${bin}")
+            fi
+          done
+          if [[ ${#existing[@]} -eq 0 ]]; then
+            echo "no release binaries found for ${TAG}" >&2
+            exit 1
+          fi
+          (
+            cd dist
+            sha256sum "${existing[@]}" > SHA256SUMS
+          )
+          gh release upload "${TAG}" dist/SHA256SUMS --clobber
+
+  publish:
+    needs: [release, artifacts, checksums]
     if: needs.release.outputs.tag != ''
     runs-on: ubuntu-latest
     permissions:
